@@ -1,0 +1,24 @@
+# Build artefacts
+build/
+*.o
+*.d
+
+# Compiled binary
+http-server
+http-server.exe
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+*.cmake
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Cache
+.cache/

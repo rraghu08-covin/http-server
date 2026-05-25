@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>http-server/1.0 — Demo</title>
+<link rel="stylesheet" href="/style.css">
+<style>
+  /* ── Reset & base ────────────────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:      #0f172a;
+    --surface: #1e293b;
+    --border:  #334155;
+    --text:    #e2e8f0;
+    --muted:   #94a3b8;
+    --accent:  #38bdf8;
+    --green:   #4ade80;
+    --purple:  #a78bfa;
+  }
+  body {
+    font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    padding: 0 16px;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* ── Navigation ────────────────────────────────────────────────────── */
+  nav {
+    max-width: 960px; margin: 0 auto;
+    padding: 18px 0;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+  .logo { font-weight: 700; font-size: 1.1rem; color: var(--accent); }
+  .badge {
+    font-size: .7rem; font-weight: 600; background: var(--accent);
+    color: #0f172a; border-radius: 999px; padding: 2px 9px;
+    margin-left: 8px; vertical-align: middle;
+  }
+  nav ul { list-style: none; display: flex; gap: 24px; }
+  nav a  { font-size: .9rem; color: var(--muted); }
+  nav a:hover { color: var(--text); text-decoration: none; }
+
+  /* ── Hero ───────────────────────────────────────────────────────────── */
+  .hero {
+    max-width: 960px; margin: 80px auto 60px;
+    text-align: center;
+  }
+  .status-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(74,222,128,.1); border: 1px solid rgba(74,222,128,.25);
+    border-radius: 999px; padding: 5px 16px;
+    font-size: .78rem; color: var(--green);
+    margin-bottom: 28px;
+  }
+  .status-pill .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: .4; transform: scale(.7); }
+  }
+  h1 { font-size: clamp(2rem, 6vw, 3.5rem); font-weight: 800; line-height: 1.2; }
+  h1 span { color: var(--accent); }
+  .subtitle {
+    font-size: 1.1rem; color: var(--muted); max-width: 560px;
+    margin: 18px auto 36px;
+  }
+  .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 11px 26px; border-radius: 8px; font-size: .9rem; font-weight: 600;
+    transition: filter .15s;
+  }
+  .btn:hover { filter: brightness(1.15); text-decoration: none; }
+  .btn-primary  { background: var(--accent); color: #0f172a; }
+  .btn-outline  {
+    background: transparent; color: var(--text);
+    border: 1px solid var(--border);
+  }
+
+  /* ── Feature cards ────────────────────────────────────────────────── */
+  .section { max-width: 960px; margin: 0 auto 72px; }
+  .section-label {
+    font-size: .75rem; font-weight: 700; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 10px;
+  }
+  .section-title { font-size: 1.6rem; font-weight: 700; margin-bottom: 32px; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+  }
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; padding: 24px;
+    transition: border-color .2s, transform .2s;
+  }
+  .card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .card-icon { font-size: 1.8rem; margin-bottom: 12px; }
+  .card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 6px; }
+  .card p  { font-size: .875rem; color: var(--muted); line-height: 1.6; }
+
+  /* ── Terminal snippet ─────────────────────────────────────────────── */
+  .terminal {
+    background: #020c1b; border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden;
+    font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+    font-size: .82rem;
+  }
+  .terminal-bar {
+    background: var(--surface); padding: 10px 16px;
+    display: flex; align-items: center; gap: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .dot-r { width:12px; height:12px; border-radius:50%; background:#ff5f56; }
+  .dot-y { width:12px; height:12px; border-radius:50%; background:#febc2e; }
+  .dot-g { width:12px; height:12px; border-radius:50%; background:#27c840; }
+  .terminal-label { margin-left: 8px; color: var(--muted); font-size:.75rem; }
+  .terminal-body { padding: 24px; line-height: 2; }
+  .c-cmd  { color: var(--accent); }
+  .c-flag { color: var(--purple); }
+  .c-ok   { color: var(--green); }
+  .c-dim  { color: var(--muted); }
+  .c-box  { color: #67e8f9; }
+
+  /* ── Footer ───────────────────────────────────────────────────────── */
+  footer {
+    max-width: 960px; margin: 0 auto 40px;
+    border-top: 1px solid var(--border); padding-top: 24px;
+    text-align: center; font-size: .82rem; color: var(--muted);
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div>
+    <span class="logo">http-server</span>
+    <span class="badge">v1.0</span>
+  </div>
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/style.css">CSS</a></li>
+    <li><a href="https://github.com/rraghu08-covin/http-server">GitHub &#8599;</a></li>
+  </ul>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="status-pill">
+    <span class="dot"></span>
+    Server is running
+  </div>
+  <h1>A <span>multi-threaded</span><br>HTTP/1.1 server</h1>
+  <p class="subtitle">
+    Built from scratch in C++17 using raw POSIX sockets, a hand-rolled
+    thread pool, zero external dependencies.
+  </p>
+  <div class="hero-actions">
+    <a class="btn btn-primary" href="https://github.com/rraghu08-covin/http-server">View on GitHub</a>
+    <a class="btn btn-outline" href="/">&#128194; Browse Files</a>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="section">
+  <p class="section-label">Capabilities</p>
+  <h2 class="section-title">What this server can do</h2>
+  <div class="grid">
+    <div class="card">
+      <div class="card-icon">&#9889;</div>
+      <h3>Thread Pool</h3>
+      <p>Every connection is handled by a fixed-size worker pool. No thread-per-connection overhead.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">&#128196;</div>
+      <h3>Static File Serving</h3>
+      <p>Serves any file under the document root with correct MIME type detection for 35+ extensions.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">&#128193;</div>
+      <h3>Directory Listing</h3>
+      <p>Auto-generated, sortable HTML listing when no index file is present. Toggle with <code>-n</code>.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">&#128100;</div>
+      <h3>POSIX Sockets</h3>
+      <p>Raw socket API — <code>bind</code>, <code>listen</code>, <code>accept</code>, <code>recv</code>, <code>send</code>. No libuv, no Boost.Asio.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">&#128737;</div>
+      <h3>Signal Handling</h3>
+      <p>Graceful <code>SIGINT</code>/<code>SIGTERM</code> shutdown. Drains the thread pool and closes the socket cleanly.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">&#127758;</div>
+      <h3>MIME Detection</h3>
+      <p>Extension-to-MIME lookup table covering web, image, font, media, document and source-code types.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Terminal -->
+<section class="section">
+  <p class="section-label">Quick Start</p>
+  <h2 class="section-title">Get up and running in seconds</h2>
+  <div class="terminal">
+    <div class="terminal-bar">
+      <span class="dot-r"></span>
+      <span class="dot-y"></span>
+      <span class="dot-g"></span>
+      <span class="terminal-label">bash</span>
+    </div>
+    <div class="terminal-body">
+      <span class="c-dim"># clone and build</span><br>
+      <span class="c-cmd">git clone</span> https://github.com/rraghu08-covin/http-server<br>
+      <span class="c-cmd">cd</span> http-server &amp;&amp; <span class="c-cmd">make</span><br>
+      <br>
+      <span class="c-dim"># run on port 8080, serving ./www</span><br>
+      <span class="c-cmd">./http-server</span><br>
+      <br>
+      <span class="c-ok">&#x250c;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2510;</span><br>
+      <span class="c-ok">&#x2551;       http-server / 1.0  ready       &#x2551;</span><br>
+      <span class="c-ok">&#x2514;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2550;&#x2518;</span><br>
+      <br>
+      <span class="c-dim"># custom port, thread count, no listing</span><br>
+      <span class="c-cmd">./http-server</span> <span class="c-flag">-p</span> 3000 <span class="c-flag">-t</span> 8 <span class="c-flag">-n</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Built with C++17 &bull; POSIX sockets &bull; No external dependencies &bull;
+  <a href="https://github.com/rraghu08-covin/http-server">github.com/rraghu08-covin/http-server</a>
+</footer>
+
+</body>
+</html>

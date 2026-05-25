@@ -1,0 +1,37 @@
+/* ── Supplemental stylesheet for http-server demo ─────────────────────────
+   The index.html is self-contained; this file is served to demonstrate
+   that the server correctly handles external CSS assets.
+   ──────────────────────────────────────────────────────────────────────── */
+
+/* Custom scrollbar (Chromium) */
+::-webkit-scrollbar       { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #1e293b; }
+::-webkit-scrollbar-thumb { background: #475569; border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
+/* Selection highlight */
+::selection {
+  background: rgba(56, 189, 248, 0.25);
+  color: #e2e8f0;
+}
+
+/* Smooth scroll */
+html { scroll-behavior: smooth; }
+
+/* Code tags */
+code {
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: .85em;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 4px;
+  padding: 1px 6px;
+  color: #67e8f9;
+}
+
+/* Print styles */
+@media print {
+  body { background: #fff; color: #000; }
+  nav, footer { display: none; }
+  .card { border: 1px solid #ccc; }
+}
